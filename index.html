@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="bn" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>অ্যাপফোর্জ বিডি (AppForge BD) — Web-to-App Builder & Marketplace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Hind Siliguri', 'Inter', sans-serif;
+      background-color: #0B0F19;
+      color: #f1f5f9;
+      overflow-x: hidden;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-[#0B0F19] text-slate-100 min-h-screen selection:bg-indigo-500/30 selection:text-indigo-200">
+
+  <!-- Toast Notification -->
+  <div id="toastBanner" class="fixed top-5 left-1/2 -translate-x-1/2 z-[100] hidden max-w-md w-[92%] px-5 py-3.5 rounded-2xl shadow-2xl border text-sm font-semibold items-center justify-between gap-3 transition-all">
+    <span id="toastText"></span>
+    <button onclick="hideToast()" class="text-xs opacity-75 hover:opacity-100">✕</button>
+  </div>
+
+  <!-- Hidden Audio Element for Background Music -->
+  <audio id="bgAudioPlayer" loop></audio>
+
+  <!-- ========================================================= -->
+  <!-- 1. ACCESS GATE / LOGIN / REGISTER SCREEN                  -->
+  <!-- ========================================================= -->
+  <section id="authGateScreen" class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- Secret Security Lock Icon -->
+    <button onclick="openAdminLockModal()" title="Security Lock" class="fixed top-4 right-4 z-40 p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-500 hover:text-indigo-400 hover:border-indigo-500/40 transition">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+    </button>
+
+    <div class="max-w-md w-full bg-slate-900/95 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative z-10">
+      <div class="flex items-center justify-center gap-3 mb-5">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+          </svg>
+        </div>
+        <div>
+          <h1 id="gateSiteName" class="text-xl font-bold text-white">অ্যাপফোর্জ বিডি (AppForge BD)</h1>
+          <p class="text-xs text-indigo-300">Web-to-App Builder & App Marketplace</p>
+        </div>
+      </div>
+
+      <!-- Free Access Password Card -->
+      <div class="bg-gradient-to-r from-emerald-500/15 to-indigo-500/15 border border-emerald-500/30 rounded-2xl p-4 mb-6 text-center">
+        <p class="text-xs text-emerald-300 font-medium mb-1.5">সবার জন্য ফ্রি অ্যাক্সেস পাসওয়ার্ড:</p>
+        <div class="flex items-center justify-center gap-2">
+          <span class="text-lg font-extrabold tracking-widest text-white bg-slate-950/90 px-4 py-1 rounded-xl border border-emerald-500/40">
+            FREE2026
+          </span>
+          <button type="button" onclick="copyValue('FREE2026', 'ফ্রি পাসওয়ার্ড কপি হয়েছে!')" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition">
+            কপি
+          </button>
+        </div>
+      </div>
+
+      <!-- Mode Switcher -->
+      <div class="grid grid-cols-3 gap-1.5 bg-slate-950 p-1.5 rounded-xl mb-5 border border-slate-800">
+        <button type="button" id="tabBtnQuick" onclick="switchAuthMode('quick')" class="py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white transition">
+          ফ্রি পাসওয়ার্ড
+        </button>
+        <button type="button" id="tabBtnRegister" onclick="switchAuthMode('register')" class="py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">
+          নতুন অ্যাকাউন্ট
+        </button>
+        <button type="button" id="tabBtnLogin" onclick="switchAuthMode('login')" class="py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">
+          লগইন করুন
+        </button>
+      </div>
+
+      <!-- Quick Free Pass Form -->
+      <form id="quickAuthForm" onsubmit="handleQuickFreeAccess(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1.5">ফ্রি অ্যাক্সেস পাসওয়ার্ড দিন</label>
+          <input id="gatePassInput" type="text" value="FREE2026" class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-white text-center font-bold tracking-wider focus:border-indigo-500 focus:outline-none" />
+        </div>
+        <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold shadow-lg shadow-indigo-600/30 transition">
+          ফ্রি-তে প্রবেশ করুন →
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerAuthForm" onsubmit="handleRegisterUser(event)" class="space-y-3 hidden">
+        <input id="regName" type="text" placeholder="আপনার পূর্ণ নাম" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:border-indigo-500 focus:outline-none" />
+        <input id="regEmail" type="email" placeholder="আপনার জিমেইল (Gmail)" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:border-indigo-500 focus:outline-none" />
+        <input id="regPhone" type="tel" placeholder="ফোন নাম্বার (যেমন: 017XXXXXXXX)" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:border-indigo-500 focus:outline-none" />
+        <input id="regPassword" type="password" placeholder="নতুন পাসওয়ার্ড দিন" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:border-indigo-500 focus:outline-none" />
+        <button type="submit" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition">
+          রেজিস্টার ও প্রবেশ করুন
+        </button>
+      </form>
+
+      <!-- Login Form -->
+      <form id="loginAuthForm" onsubmit="handleLoginUser(event)" class="space-y-3 hidden">
+        <input id="loginIdentifier" type="text" placeholder="জিমেইল অথবা ফোন নাম্বার" class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:border-indigo-500 focus:outline-none" />
+        <input id="loginPassword" type="password" placeholder="পাসওয়ার্ড" class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:border-indigo-500 focus:outline-none" />
+        <button type="submit" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm transition">
+          লগইন করুন
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Banned Screen -->
+  <section id="bannedScreen" class="min-h-screen hidden items-center justify-center p-4">
+    <div class="max-w-md w-full bg-slate-900 border border-red-500/40 rounded-3xl p-8 text-center shadow-2xl">
+      <div class="w-16 h-16 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mx-auto mb-4 text-2xl font-extrabold">!</div>
+      <h1 class="text-2xl font-bold text-red-400 mb-2">আপনার অ্যাকাউন্টটি ব্যান করা হয়েছে!</h1>
+      <p id="banReasonText" class="text-slate-300 text-sm mb-3"></p>
+      <p id="banDurationText" class="text-xs text-amber-300 bg-slate-950 p-3 rounded-xl border border-slate-800 mb-6"></p>
+      <button onclick="logoutToGate()" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm font-bold text-white transition">
+        অন্য অ্যাকাউন্ট দিয়ে লগইন করুন
+      </button>
+    </div>
+  </section>
+
+  <!-- ========================================================= -->
+  <!-- 2. MAIN PLATFORM APPLICATION                              -->
+  <!-- ========================================================= -->
+  <div id="mainPlatformApp" class="hidden pb-28">
+    <!-- Announcement Bar -->
+    <div id="announcementBar" class="bg-gradient-to-r from-indigo-900/70 via-violet-900/70 to-indigo-900/70 border-b border-indigo-500/20 px-4 py-2 text-center text-xs text-indigo-200"></div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-30 bg-[#0B0F19]/90 backdrop-blur-xl border-b border-slate-800/90">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+              <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            </svg>
+          </div>
+          <div>
+            <h1 id="headerSiteName" class="text-base sm:text-lg font-bold text-white leading-tight">অ্যাপফোর্জ বিডি (AppForge BD)</h1>
+            <p id="headerUserName" class="text-[11px] text-slate-400"></p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Background Music Controls -->
+          <div class="flex items-center bg-slate-900 border border-slate-800 rounded-xl p-1">
+            <button onclick="openMusicModal()" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-pink-300 hover:bg-slate-800 transition">
+              <span>🎵</span>
+              <span id="musicLabelText" class="hidden sm:inline">গান</span>
+            </button>
+            <button id="musicPlayPauseBtn" onclick="toggleBgMusicPlay()" class="hidden px-2 py-1 text-xs text-slate-200 hover:text-white">▶</button>
+            <button id="musicMuteBtn" onclick="toggleBgMusicMute()" class="hidden px-2 py-1 text-xs text-slate-200 hover:text-white">🔊</button>
+          </div>
+
+          <!-- Wallet Balance Button -->
+          <button onclick="openWalletModal()" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm font-bold transition">
+            <span>💳</span>
+            <span id="headerWalletBalance">৳ 0</span>
+            <span class="bg-emerald-500 text-slate-950 text-[10px] px-1.5 py-0.5 rounded font-extrabold">+ অ্যাড</span>
+          </button>
+
+          <!-- Secret Corner Lock Icon -->
+          <button id="headerLockBtn" onclick="handleHeaderLockClick()" title="Security Lock" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 hover:text-indigo-400 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="max-w-7xl mx-auto px-4 pb-3 flex items-center gap-2 overflow-x-auto custom-scroll">
+        <button id="navTabBuilder" onclick="switchMainTab('builder')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 text-white shadow-lg shadow-indigo-600/25 whitespace-nowrap transition">
+          🌐 লিংক থেকে অ্যাপ তৈরি
+        </button>
+        <button id="navTabFree" onclick="switchMainTab('free-apps')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-slate-400 hover:text-white border border-slate-800 whitespace-nowrap transition">
+          📥 ফ্রি অ্যাপ স্টোর (<span id="freeCountBadge">0</span>)
+        </button>
+        <button id="navTabPaid" onclick="switchMainTab('paid-apps')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-slate-400 hover:text-white border border-slate-800 whitespace-nowrap transition">
+          👑 পেইড অ্যাপ স্টোর (<span id="paidCountBadge">0</span>)
+        </button>
+      </div>
+    </header>
+
+    <!-- Admin Panel Section (Unlocked via RRR222) -->
+    <section id="adminPanelSection" class="max-w-7xl mx-auto px-4 pt-6 hidden">
+      <div class="bg-slate-900/95 border-2 border-amber-500/40 rounded-3xl p-5 sm:p-6 shadow-2xl">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-5 border-b border-slate-800">
+          <div>
+            <h2 class="text-lg font-bold text-amber-300">🛡️ মাস্টার অ্যাডমিন প্যানেল</h2>
+            <p class="text-xs text-slate-400">ইউজার কন্ট্রোল, ফ্রি অ্যাপ আপলোড, VIP অটোমেশন ও ওনার সেটিংস</p>
+          </div>
+          <button onclick="lockAdminPanel()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-red-500/20 text-slate-300 hover:text-red-300 text-xs font-bold transition">
+            প্যানেল লক করুন
+          </button>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mb-6">
+          <button onclick="switchAdminTab('users')" id="adminTabUsers" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950">
+            ইউজার ম্যানেজমেন্ট
+          </button>
+          <button onclick="openUploadModal(true)" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white">
+            + অ্যাপ আপলোড (০ টাকা ফ্রি)
+          </button>
+          <button onclick="switchAdminTab('requests')" id="adminTabRequests" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-950 text-slate-300">
+            রিকোয়েস্ট ও ব্যান লিস্ট
+          </button>
+          <button onclick="switchAdminTab('vip-bot')" id="adminTabVip" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-950 text-violet-300 border border-violet-500/30">
+            VIP Ultra Pro Max Abba Max
+          </button>
+          <button onclick="switchAdminTab('owner')" id="adminTabOwner" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-950 text-indigo-300 border border-indigo-500/30">
+            ওনার প্যানেল
+          </button>
+        </div>
+
+        <div id="adminUsersContainer" class="space-y-3 max-h-[420px] overflow-y-auto custom-scroll"></div>
+
+        <div id="adminRequestsContainer" class="hidden grid md:grid-cols-2 gap-4">
+          <div id="adminBannedListBox" class="bg-slate-950 border border-slate-800 rounded-2xl p-4"></div>
+          <div id="adminPaymentLogsBox" class="bg-slate-950 border border-slate-800 rounded-2xl p-4"></div>
+        </div>
+
+        <div id="adminVipBotContainer" class="hidden bg-slate-950 border border-violet-500/30 rounded-2xl p-5">
+          <div id="vipBotLockBox" class="max-w-sm mx-auto text-center space-y-3 py-4">
+            <h3 class="text-base font-bold text-white">VIP Ultra Pro Max Abba Max</h3>
+            <p class="text-xs text-slate-400">অটোনোমাস এআই ইঞ্জিন চালু করতে সিক্রেট পাসওয়ার্ড দিন</p>
+            <input id="vipBotCodeInput" type="password" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-center text-white tracking-widest" />
+            <button onclick="unlockVipBotPanel()" class="w-full py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs">
+              প্রবেশ করুন
+            </button>
+          </div>
+
+          <div id="vipBotActiveBox" class="hidden space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 class="text-base font-bold text-violet-300">VIP Ultra Pro Max Abba Max অটোমেশন কন্ট্রোল</h3>
+                <p class="text-xs text-slate-400">স্টার্ট বাটনে ক্লিক করলে এআই বট ৯৯% কাজ স্বয়ংক্রিয়ভাবে পরিচালনা করবে।</p>
+              </div>
+              <button onclick="startVipBotEngine()" id="vipStartBtn" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-bold text-sm shadow-lg">
+                ⚡ স্টার্ট (Start)
+              </button>
+            </div>
+            <div id="vipBotLogs" class="bg-slate-900 rounded-xl p-4 border border-slate-800 space-y-2 max-h-52 overflow-y-auto font-mono text-xs text-emerald-300">
+              <p class="text-slate-500">ইঞ্জিন চালু করতে "স্টার্ট (Start)" বাটনে ক্লিক করুন...</p>
+            </div>
+          </div>
+        </div>
+
+        <form id="adminOwnerForm" onsubmit="saveOwnerSettings(event)" class="hidden grid sm:grid-cols-2 gap-4 bg-slate-950 p-5 rounded-2xl border border-indigo-500/30">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">ওয়েবসাইটের নাম</label>
+            <input id="ownerSiteNameInput" type="text" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">ট্যাগলাইন</label>
+            <input id="ownerTaglineInput" type="text" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">বিকাশ নাম্বার</label>
+            <input id="ownerBkashInput" type="text" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">নগদ নাম্বার</label>
+            <input id="ownerNagadInput" type="text" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">অ্যাপ আপলোড চার্জ (টাকা)</label>
+            <input id="ownerUploadFeeInput" type="number" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">ব্যাকগ্রাউন্ড গান চার্জ (টাকা)</label>
+            <input id="ownerSongFeeInput" type="number" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs text-slate-400 mb-1">নোটিশ / অ্যানাউন্সমেন্ট বার্তা</label>
+            <input id="ownerAnnouncementInput" type="text" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white" />
+          </div>
+          <div class="sm:col-span-2">
+            <button type="submit" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm">
+              ওনার সেটিংস সেভ করুন
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Main Content Body -->
+    <main class="max-w-7xl mx-auto px-4 pt-6">
+      <!-- TAB 1: WEB-TO-APP BUILDER -->
+      <section id="builderSection" class="grid lg:grid-cols-12 gap-8 items-start">
+        <div class="lg:col-span-7 bg-slate-900/85 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-4">
+            ✨ ইনস্ট্যান্ট ওয়েব-টু-অ্যাপ জেনারেটর
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">
+            যেকোনো ওয়েবসাইট লিংক দিন, অ্যাপ বানিয়ে নিন!
+          </h2>
+          <p id="builderTaglineText" class="text-sm text-slate-400 mb-6"></p>
+
+          <form onsubmit="handleGenerateWebApp(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">ওয়েবসাইটের লিংক (URL) *</label>
+              <input id="builderUrlInput" type="text" placeholder="https://example.com" class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:border-indigo-500 focus:outline-none" />
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5">আপনার অ্যাপের নাম</label>
+                <input id="builderAppNameInput" type="text" placeholder="যেমন: আমার নিউজ অ্যাপ" class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:border-indigo-500 focus:outline-none" />
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1.5">অ্যাপ আইকন</label>
+                  <select id="builderIconSelect" class="w-full px-3 py-3 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white">
+                    <option value="🚀">🚀 রকেট</option>
+                    <option value="📱">📱 মোবাইল</option>
+                    <option value="🛒">🛒 শপ</option>
+                    <option value="🎮">🎮 গেম</option>
+                    <option value="📰">📰 নিউজ</option>
+                    <option value="🎬">🎬 ভিডিও</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1.5">থিম কালার</label>
+                  <input id="builderColorInput" type="color" value="#6366f1" class="w-full h-[46px] rounded-xl bg-slate-950 border border-slate-700 p-1 cursor-pointer" />
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition">
+              অ্যাপ তৈরি করুন ও ওপেন করুন →
+            </button>
+          </form>
+
+          <div id="generatedAppDownloadBox" class="hidden mt-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p id="generatedAppReadyTitle" class="text-sm font-bold text-emerald-300"></p>
+              <p class="text-xs text-slate-400">অ্যাপ প্যাকেজটি ডাউনলোড করে আপনার ডিভাইসে সংরক্ষণ করতে পারেন।</p>
+            </div>
+            <button onclick="downloadGeneratedWebApp()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition">
+              ⬇ অ্যাপ ডাউনলোড করুন
+            </button>
+          </div>
+        </div>
+
+        <!-- Phone Frame Simulator -->
+        <div class="lg:col-span-5 flex flex-col items-center">
+          <div class="w-[310px] sm:w-[340px] h-[590px] bg-slate-950 rounded-[44px] border-[8px] border-slate-800 shadow-2xl overflow-hidden flex flex-col">
+            <div class="h-6 bg-slate-900 flex items-center justify-center">
+              <div class="w-24 h-3.5 bg-black rounded-full"></div>
+            </div>
+
+            <div id="phoneEmptyState" class="flex-1 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-900 to-slate-950">
+              <div class="w-16 h-16 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center mb-4 text-2xl">
+                📱
+              </div>
+              <h3 class="text-base font-bold text-white mb-2">লাইভ অ্যাপ প্রিভিউ</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                বামপাশে যেকোনো ওয়েবসাইটের লিংক দিয়ে "অ্যাপ তৈরি করুন" বাটনে ক্লিক করলে এখানে আপনার অ্যাপটি চালু হয়ে যাবে।
+              </p>
+            </div>
+
+            <div id="phoneActiveState" class="hidden flex-1 flex-col">
+              <div id="phoneAppHeader" style="background-color: #6366f1;" class="px-4 py-3 text-white flex items-center justify-between shadow-md">
+                <span id="phoneAppTitleText" class="font-bold text-sm truncate"></span>
+                <div class="flex items-center gap-1.5">
+                  <button onclick="toggleIframeFallback()" class="text-[10px] bg-black/25 px-2 py-1 rounded-md hover:bg-black/40">
+                    বিকল্প ভিউ
+                  </button>
+                  <a id="phoneExternalLink" href="#" target="_blank" rel="noreferrer" class="text-xs bg-black/25 px-2 py-1 rounded-md">↗</a>
+                </div>
+              </div>
+              <div class="flex-1 bg-white relative">
+                <iframe id="phoneAppIframe" class="w-full h-full border-0" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+                <div id="phoneFallbackBox" class="hidden h-full bg-slate-900 text-slate-200 p-6 flex-col items-center justify-center text-center">
+                  <p id="phoneFallbackUrl" class="text-xs text-slate-400 mb-4 break-all"></p>
+                  <a id="phoneFallbackBtn" href="#" target="_blank" rel="noreferrer" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">
+                    সরাসরি ওয়েবসাইট খুলুন ↗
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class="h-5 bg-slate-950 flex items-center justify-center">
+              <div class="w-28 h-1 bg-slate-700 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2 & 3: FREE & PAID APP STORE -->
+      <section id="marketplaceSection" class="hidden">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 id="marketplaceTitle" class="text-xl sm:text-2xl font-bold text-white"></h2>
+            <p id="marketplaceSubtitle" class="text-xs sm:text-sm text-slate-400"></p>
+          </div>
+          <button onclick="openUploadModal(false)" id="marketplaceUploadBtn" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-bold transition">
+            + নতুন অ্যাপ আপলোড করুন
+          </button>
+        </div>
+
+        <div id="marketplaceAppsGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </section>
+    </main>
+
+    <!-- Floating VIP AI Support Button -->
+    <button onclick="toggleAiChatWidget()" class="fixed bottom-5 left-5 z-40 flex items-center gap-2 px-4 py-3.5 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-xs sm:text-sm shadow-2xl shadow-indigo-600/40 border border-indigo-400/30 transition">
+      <span>🤖</span>
+      <span>VIP Ultra Pro Max AI</span>
+    </button>
+
+    <!-- Floating "+" Balloon Button -->
+    <button onclick="openUploadModal(false)" title="নতুন অ্যাপ আপলোড করুন" class="fixed bottom-5 right-5 z-40 w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-500 via-teal-500 to-indigo-600 hover:scale-105 active:scale-95 text-white text-3xl font-bold flex items-center justify-center shadow-2xl shadow-emerald-500/40 border-2 border-white/20 transition">
+      +
+    </button>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODALS                                                    -->
+  <!-- ========================================================= -->
+  <!-- Upload App Modal -->
+  <div id="uploadAppModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 my-8 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
+        <div>
+          <h3 id="uploadModalTitle" class="text-lg font-bold text-white">আপনার অ্যাপ আপলোড করুন</h3>
+          <p id="uploadModalFeeSubtitle" class="text-xs text-slate-400"></p>
+        </div>
+        <button onclick="closeUploadModal()" class="text-slate-400 hover:text-white text-xl">✕</button>
+      </div>
+
+      <form onsubmit="handlePublishStoreApp(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">
+            ১. ফাইল সিলেক্ট করুন (শুধুমাত্র .apk বা .app ফাইল; ZIP/ZArchiver নিষিদ্ধ) *
+          </label>
+          <label class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-slate-950 border-2 border-dashed border-indigo-500/40 hover:border-indigo-400 cursor-pointer text-xs font-semibold text-indigo-300 transition">
+            <span id="uploadFileLabelText">Choose File (.apk / .app)</span>
+            <input id="uploadFileInput" type="file" accept=".apk,.app" onchange="handleUploadFileSelection(event)" class="hidden" />
+          </label>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">২. অ্যাপের নাম দিন *</label>
+          <input id="uploadAppNameInput" type="text" placeholder="অ্যাপের নাম লিখুন" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-red-300 mb-1">৩. প্রমাণ হিসেবে ভিডিও লিংক দিন (বাধ্যতামূলক) *</label>
+          <input id="uploadVideoLinkInput" type="url" placeholder="https://youtube.com/..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">৪. ডেসক্রিপশন দিন (পাসওয়ার্ড থাকলে এখানে অবশ্যই লিখুন) *</label>
+          <textarea id="uploadDescInput" rows="3" placeholder="অ্যাপের বিবরণ এবং পাসওয়ার্ড থাকলে তা এখানে লিখুন..." class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">আপনার বিকাশ নাম্বার</label>
+            <input id="uploadBkashInput" type="tel" placeholder="017XXXXXXXX" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">আপনার নগদ নাম্বার</label>
+            <input id="uploadNagadInput" type="tel" placeholder="017XXXXXXXX" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">৫. ফ্রি নাকি পেইড?</label>
+          <div class="grid grid-cols-2 gap-3">
+            <button type="button" id="pricingBtnFree" onclick="setUploadPricingType('free')" class="py-2.5 rounded-xl text-xs font-bold bg-emerald-600 border border-emerald-400 text-white">
+              ফ্রি (Free)
+            </button>
+            <button type="button" id="pricingBtnPaid" onclick="setUploadPricingType('paid')" class="py-2.5 rounded-xl text-xs font-bold bg-slate-950 border border-slate-700 text-slate-400">
+              পেইড (Paid)
+            </button>
+          </div>
+        </div>
+
+        <div id="uploadPriceFieldBox" class="hidden">
+          <label class="block text-xs font-semibold text-amber-300 mb-1">অ্যাপের দাম লিখুন (টাকা) *</label>
+          <input id="uploadPriceInput" type="number" min="1" placeholder="যেমন: 100" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-amber-500/50 text-sm text-white" />
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-500 hover:to-emerald-500 text-white font-bold text-sm shadow-lg transition">
+          অ্যাপ পাবলিশ করুন
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Wallet & Add Money Modal -->
+  <div id="walletModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 my-8 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
+        <h3 class="text-lg font-bold text-white">💳 ওয়ালেট ও টাকা অ্যাড করুন</h3>
+        <button onclick="closeWalletModal()" class="text-slate-400 hover:text-white text-xl">✕</button>
+      </div>
+
+      <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-3.5 mb-4 flex items-center justify-between">
+        <span class="text-xs text-emerald-200">বর্তমান ওয়ালেট ব্যালেন্স:</span>
+        <span id="modalWalletBalance" class="text-xl font-extrabold text-emerald-400">৳ 0</span>
+      </div>
+
+      <div class="space-y-2.5 mb-5">
+        <div class="flex items-center justify-between p-3 rounded-xl bg-pink-500/10 border border-pink-500/30">
+          <div>
+            <span class="text-[11px] font-bold text-pink-400 block">বিকাশ (bKash Personal)</span>
+            <span id="walletBkashDisplay" class="text-sm font-extrabold text-white tracking-wider"></span>
+          </div>
+          <button type="button" onclick="copyCurrentNumber('bkash')" class="px-3 py-1.5 rounded-lg bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold">
+            কপি
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between p-3 rounded-xl bg-orange-500/10 border border-orange-500/30">
+          <div>
+            <span class="text-[11px] font-bold text-orange-400 block">নগদ (Nagad Personal)</span>
+            <span id="walletNagadDisplay" class="text-sm font-extrabold text-white tracking-wider"></span>
+          </div>
+          <button type="button" onclick="copyCurrentNumber('nagad')" class="px-3 py-1.5 rounded-lg bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold">
+            কপি
+          </button>
+        </div>
+      </div>
+
+      <form onsubmit="handleAddMoneySubmit(event)" class="space-y-3">
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" id="payMethodBkash" onclick="selectPayMethod('bKash')" class="py-2 rounded-xl text-xs font-bold bg-pink-600 border border-pink-400 text-white">
+            বিকাশে পাঠিয়েছি
+          </button>
+          <button type="button" id="payMethodNagad" onclick="selectPayMethod('Nagad')" class="py-2 rounded-xl text-xs font-bold bg-slate-950 border border-slate-800 text-slate-400">
+            নগদে পাঠিয়েছি
+          </button>
+        </div>
+        <input id="addMoneySenderInput" type="tel" placeholder="যে নাম্বার থেকে টাকা পাঠিয়েছেন" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white" />
+        <div class="grid grid-cols-2 gap-2.5">
+          <input id="addMoneyAmountInput" type="number" min="1" placeholder="কত টাকা (Amount)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white" />
+          <input id="addMoneyTrxInput" type="text" placeholder="ট্রানজেকশন আইডি (TrxID)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white" />
+        </div>
+        <label class="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl bg-slate-950 border border-dashed border-emerald-500/40 cursor-pointer text-xs text-emerald-300">
+          <span id="addMoneyScreenshotLabel">পেমেন্ট স্ক্রিনশট আপলোড করুন</span>
+          <input id="addMoneyScreenshotInput" type="file" accept="image/*" onchange="handleScreenshotFile(event)" class="hidden" />
+        </label>
+        <button type="submit" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition">
+          ভেরিফাই ও ওয়ালেটে টাকা অ্যাড করুন
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Paid App Unlock Modal -->
+  <div id="unlockAppModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
+        <div>
+          <h3 id="unlockModalAppTitle" class="text-base font-bold text-white"></h3>
+          <p id="unlockModalPriceText" class="text-xs text-amber-300 font-bold"></p>
+        </div>
+        <div class="flex items-center gap-2 relative">
+          <button type="button" onclick="toggleUnlockMoreMenu()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200">⋮</button>
+          <div id="unlockMoreMenu" class="hidden absolute right-8 top-9 w-44 bg-slate-950 border border-emerald-500/40 rounded-xl shadow-2xl p-1.5 z-20">
+            <button type="button" onclick="unlockSelectedAppWithWallet()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-emerald-600/20 text-emerald-300 text-xs font-bold">
+              💳 ওয়ালেট পে
+            </button>
+          </div>
+          <button onclick="closeUnlockModal()" class="text-slate-400 hover:text-white text-xl">✕</button>
+        </div>
+      </div>
+
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 mb-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs text-slate-400">আপনার ওয়ালেট ব্যালেন্স:</span>
+          <span id="unlockModalWalletBal" class="text-sm font-bold text-emerald-400">৳ 0</span>
+        </div>
+        <button type="button" onclick="unlockSelectedAppWithWallet()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs">
+          💳 ওয়ালেট ব্যালেন্স দিয়ে আনলক করুন
+        </button>
+      </div>
+
+      <form onsubmit="unlockSelectedAppWithDirectPay(event)" class="space-y-3 border-t border-slate-800 pt-4">
+        <p class="text-xs font-semibold text-slate-300">অথবা সেন্ড মানি করে তথ্য দিন:</p>
+        <div id="unlockSellerNumbersText" class="text-xs bg-slate-950 p-2.5 rounded-xl border border-slate-800 text-slate-300"></div>
+        <input id="unlockSenderInput" type="tel" placeholder="আপনার নাম্বার" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white" />
+        <input id="unlockTrxInput" type="text" placeholder="ট্রানজেকশন আইডি (TrxID)" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white" />
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs">
+          পেমেন্ট যাচাই ও অ্যাপ আনলক করুন
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Background Music Modal -->
+  <div id="musicModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl">
+      <div class="w-12 h-12 rounded-2xl bg-pink-500/20 text-pink-400 flex items-center justify-center mx-auto mb-3 text-xl">🎵</div>
+      <h3 class="text-lg font-bold text-white mb-1">ব্যাকগ্রাউন্ড গান যুক্ত করুন</h3>
+      <p id="musicModalFeeDesc" class="text-xs text-slate-400 mb-4"></p>
+      <label class="block w-full py-3 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs cursor-pointer mb-3 transition">
+        ফোন থেকে অডিও গান সিলেক্ট করুন
+        <input type="file" accept="audio/*" onchange="handleBgSongSelection(event)" class="hidden" />
+      </label>
+      <button onclick="closeMusicModal()" class="w-full py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold">
+        বন্ধ করুন
+      </button>
+    </div>
+  </div>
+
+  <!-- Secret Admin Lock Password Modal -->
+  <div id="adminLockModal" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-xs w-full shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-sm font-bold text-slate-200">🔒 সিকিউরিটি পাসওয়ার্ড</span>
+        <button onclick="closeAdminLockModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <form onsubmit="verifyAdminPassword(event)" class="space-y-3">
+        <input id="adminLockPassInput" type="password" class="w-full px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-center tracking-widest focus:border-indigo-500 focus:outline-none" />
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm">
+          আনলক করুন
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Floating VIP Ultra Pro Max AI Support Chat Widget -->
+  <div id="aiChatWidget" class="fixed bottom-20 left-5 z-50 hidden w-[330px] sm:w-[370px] bg-slate-900 border border-indigo-500/40 rounded-3xl shadow-2xl overflow-hidden flex-col">
+    <div class="bg-gradient-to-r from-violet-700 to-indigo-700 px-4 py-3 flex items-center justify-between">
+      <div>
+        <h4 class="text-xs font-extrabold text-white">🤖 VIP Ultra Pro Max AI Support</h4>
+        <p class="text-[10px] text-indigo-200">২৪/৭ ইনস্ট্যান্ট সাপোর্ট ও অটো-মডারেশন</p>
+      </div>
+      <button onclick="toggleAiChatWidget()" class="text-white/80 hover:text-white text-lg">✕</button>
+    </div>
+    <div id="aiMessagesContainer" class="p-3.5 h-72 overflow-y-auto space-y-2.5 bg-slate-950/90 custom-scroll"></div>
+    <form onsubmit="handleAiChatSubmit(event)" class="p-2.5 bg-slate-900 border-t border-slate-800 flex gap-2">
+      <input id="aiChatInput" type="text" placeholder="আপনার প্রশ্ন লিখুন..." class="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none" />
+      <button type="submit" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold">পাঠান</button>
+    </form>
+  </div>
+
+  <script>
+    // =========================================================
+    // STATE & PERSISTENCE (WITH SAFE STORAGE FALLBACK)
+    // =========================================================
+    const STORAGE_KEY = 'appforge_bd_state_v1';
+    const memoryStorage = {};
+
+    function readStorage() {
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) {
+        return memoryStorage[STORAGE_KEY] || null;
+      }
+    }
+
+    function writeStorage(data) {
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (e) {
+        memoryStorage[STORAGE_KEY] = data;
+      }
+    }
+
+    const defaultState = {
+      siteConfig: {
+        siteName: 'অ্যাপফোর্জ বিডি (AppForge BD)',
+        tagline: 'যেকোনো ওয়েবসাইট লিংক থেকে মুহূর্তেই অ্যাপ তৈরি করুন এবং অ্যাপ মার্কেটপ্লেসে শেয়ার করুন',
+        uploadFee: 50,
+        songFee: 2,
+        bkashNumber: '01796650897',
+        nagadNumber: '01701485169',
+        announcement: 'স্বাগতম! ফ্রি পাসওয়ার্ড (FREE2026) দিয়ে প্রবেশ করুন এবং নিজের ওয়েবসাইটকে অ্যাপে রূপান্তর করুন।'
+      },
+      users: [],
+      currentUserId: null,
+      apps: [], // Starts strictly empty: 0 apps
+      requests: [],
+      isAdminUnlocked: false,
+      isVipBotUnlocked: false,
+      isVipBotRunning: false,
+      vipBotLogs: []
+    };
+
+    let appState = Object.assign({}, defaultState, readStorage() || {});
+    appState.siteConfig = Object.assign({}, defaultState.siteConfig, (appState.siteConfig || {}));
+
+    function saveState() {
+      writeStorage(appState);
+    }
+
+    function getCurrentUser() {
+      if (!appState.currentUserId) return null;
+      return appState.users.find((u) => u.id === appState.currentUserId) || null;
+    }
+
+    // UI transient state
+    let currentMainTab = 'builder';
+    let isAdminUploadMode = false;
+    let selectedUploadFile = null;
+    let selectedUploadPricing = 'free';
+    let selectedAddMoneyMethod = 'bKash';
+    let selectedScreenshotName = '';
+    let activeUnlockAppId = null;
+    let generatedWebAppData = null;
+    let iframeFallbackActive = false;
+    let isBgMuted = false;
+
+    let aiChatHistory = [
+      {
+        role: 'assistant',
+        text: 'আসসালামু আলাইকুম! আমি আপনার VIP Ultra Pro Max AI Support অ্যাসিস্ট্যান্ট। ওয়েবসাইট থেকে অ্যাপ তৈরি, অ্যাপ আপলোড, ওয়ালেট বা যেকোনো বিষয়ে সাহায্য করতে প্রস্তুত।'
+      }
+    ];
+
+    // =========================================================
+    // TOAST & CLIPBOARD HELPERS
+    // =========================================================
+    let toastTimeout = null;
+    function showToast(message, type = 'info') {
+      const banner = document.getElementById('toastBanner');
+      const textEl = document.getElementById('toastText');
+      banner.className = 'fixed top-5 left-1/2 -translate-x-1/2 z-[100] max-w-md w-[92%] px-5 py-3.5 rounded-2xl shadow-2xl border text-sm font-semibold flex items-center justify-between gap-3 transition-all';
+      if (type === 'error') {
+        banner.classList.add('bg-red-950/95', 'border-red-500/50', 'text-red-200');
+      } else if (type === 'success') {
+        banner.classList.add('bg-emerald-950/95', 'border-emerald-500/50', 'text-emerald-200');
+      } else {
+        banner.classList.add('bg-indigo-950/95', 'border-indigo-500/50', 'text-indigo-200');
+      }
+      textEl.textContent = message;
+      banner.classList.remove('hidden');
+      banner.classList.add('flex');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(hideToast, 4200);
+    }
+
+    function hideToast() {
+      const banner = document.getElementById('toastBanner');
+      banner.classList.add('hidden');
+      banner.classList.remove('flex');
+    }
+
+    function copyValue(val, successMsg) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(val).catch(() => {});
+      }
+      showToast(successMsg || 'কপি করা হয়েছে!', 'success');
+    }
+
+    // =========================================================
+    // AUTH GATE, REGISTRATION & BAN CHECK
+    // =========================================================
+    function switchAuthMode(mode) {
+      const quickForm = document.getElementById('quickAuthForm');
+      const regForm = document.getElementById('registerAuthForm');
+      const loginForm = document.getElementById('loginAuthForm');
+
+      const btnQuick = document.getElementById('tabBtnQuick');
+      const btnReg = document.getElementById('tabBtnRegister');
+      const btnLogin = document.getElementById('tabBtnLogin');
+
+      quickForm.classList.toggle('hidden', mode !== 'quick');
+      regForm.classList.toggle('hidden', mode !== 'register');
+      loginForm.classList.toggle('hidden', mode !== 'login');
+
+      btnQuick.className = 'py-2 text-xs font-bold rounded-lg transition ' + (mode === 'quick' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white');
+      btnReg.className = 'py-2 text-xs font-bold rounded-lg transition ' + (mode === 'register' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white');
+      btnLogin.className = 'py-2 text-xs font-bold rounded-lg transition ' + (mode === 'login' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white');
+    }
+
+    function handleQuickFreeAccess(e) {
+      e.preventDefault();
+      const pass = document.getElementById('gatePassInput').value.trim().toUpperCase();
+      if (pass !== 'FREE2026') {
+        showToast('সঠিক ফ্রি অ্যাক্সেস পাসওয়ার্ড দিন (FREE2026)', 'error');
+        return;
+      }
+
+      let guestUser = appState.users.find((u) => u.id === 'guest_user');
+      if (!guestUser) {
+        guestUser = {
+          id: 'guest_user',
+          name: 'গেস্ট ইউজার',
+          email: 'guest@appforge.bd',
+          phone: '01700000000',
+          password: '',
+          walletBalance: 0,
+          banned: false,
+          banReason: '',
+          banUntil: null,
+          unlockedApps: []
+        };
+        appState.users.push(guestUser);
+      }
+      appState.currentUserId = guestUser.id;
+      saveState();
+      renderAppView();
+      showToast('ফ্রি পাসওয়ার্ডে সফলভাবে প্রবেশ করেছেন!', 'success');
+    }
+
+    function handleRegisterUser(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+
+      if (!name || !email || !phone || !password) {
+        showToast('নাম, জিমেইল, ফোন নাম্বার এবং পাসওয়ার্ড সব পূরণ করুন।', 'error');
+        return;
+      }
+
+      const exists = appState.users.find(
+        (u) => u.email.toLowerCase() === email.toLowerCase() || u.phone === phone
+      );
+      if (exists) {
+        showToast('এই জিমেইল বা ফোন নাম্বার দিয়ে আগেই অ্যাকাউন্ট খোলা আছে। লগইন করুন।', 'error');
+        return;
+      }
+
+      const newUser = {
+        id: 'user_' + Date.now(),
+        name,
+        email,
+        phone,
+        password,
+        walletBalance: 0,
+        banned: false,
+        banReason: '',
+        banUntil: null,
+        unlockedApps: []
+      };
+
+      appState.users.push(newUser);
+      appState.currentUserId = newUser.id;
+      saveState();
+      renderAppView();
+      showToast('অ্যাকাউন্ট তৈরি এবং লগইন সম্পন্ন হয়েছে!', 'success');
+    }
+
+    function handleLoginUser(e) {
+      e.preventDefault();
+      const identifier = document.getElementById('loginIdentifier').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+
+      const found = appState.users.find(
+        (u) =>
+          (u.email.toLowerCase() === identifier.toLowerCase() || u.phone === identifier) &&
+          u.password === password
+      );
+      if (!found) {
+        showToast('জিমেইল/ফোন নাম্বার অথবা পাসওয়ার্ড ভুল হয়েছে!', 'error');
+        return;
+      }
+
+      appState.currentUserId = found.id;
+      saveState();
+      renderAppView();
+      showToast(`স্বাগতম ${found.name}!`, 'success');
+    }
+
+    function logoutToGate() {
+      appState.currentUserId = null;
+      saveState();
+      renderAppView();
+    }
+
+    function checkUserBanStatus(user) {
+      if (!user || !user.banned) return { isBanned: false };
+      if (user.banUntil === 'permanent') {
+        return { isBanned: true, durationText: 'মেয়াদ: স্থায়ীভাবে (Permanent Ban)' };
+      }
+      if (typeof user.banUntil === 'number' && Date.now() < user.banUntil) {
+        const hoursLeft = Math.ceil((user.banUntil - Date.now()) / (1000 * 60 * 60));
+        return { isBanned: true, durationText: `মেয়াদ: প্রায় ${hoursLeft} ঘণ্টা বাকি` };
+      }
+      user.banned = false;
+      user.banUntil = null;
+      user.banReason = '';
+      saveState();
+      return { isBanned: false };
+    }
+
+    // =========================================================
+    // MAIN RENDERING & TAB NAVIGATION
+    // =========================================================
+    function renderAppView() {
+      const authScreen = document.getElementById('authGateScreen');
+      const bannedScreen = document.getElementById('bannedScreen');
+      const mainPlatform = document.getElementById('mainPlatformApp');
+
+      document.getElementById('gateSiteName').textContent = appState.siteConfig.siteName;
+      document.getElementById('headerSiteName').textContent = appState.siteConfig.siteName;
+      document.getElementById('builderTaglineText').textContent = appState.siteConfig.tagline;
+      document.getElementById('announcementBar').textContent = appState.siteConfig.announcement;
+
+      const user = getCurrentUser();
+      if (!user) {
+        authScreen.classList.remove('hidden');
+        bannedScreen.classList.add('hidden');
+        bannedScreen.classList.remove('flex');
+        mainPlatform.classList.add('hidden');
+        return;
+      }
+
+      const banStatus = checkUserBanStatus(user);
+      if (banStatus.isBanned) {
+        authScreen.classList.add('hidden');
+        mainPlatform.classList.add('hidden');
+        bannedScreen.classList.remove('hidden');
+        bannedScreen.classList.add('flex');
+        document.getElementById('banReasonText').textContent = 'কারণ: ' + (user.banReason || 'নীতিমালা লঙ্ঘন');
+        document.getElementById('banDurationText').textContent = banStatus.durationText;
+        return;
+      }
+
+      authScreen.classList.add('hidden');
+      bannedScreen.classList.add('hidden');
+      bannedScreen.classList.remove('flex');
+      mainPlatform.classList.remove('hidden');
+
+      document.getElementById('headerUserName').textContent = user.name;
+      document.getElementById('headerWalletBalance').textContent = '৳ ' + Number(user.walletBalance || 0);
+
+      const freeCount = appState.apps.filter((a) => a.pricingType === 'free').length;
+      const paidCount = appState.apps.filter((a) => a.pricingType === 'paid').length;
+      document.getElementById('freeCountBadge').textContent = freeCount;
+      document.getElementById('paidCountBadge').textContent = paidCount;
+
+      // Admin panel visibility
+      const adminSection = document.getElementById('adminPanelSection');
+      if (appState.isAdminUnlocked) {
+        adminSection.classList.remove('hidden');
+        renderAdminUsersList();
+        renderAdminRequestsAndBans();
+        populateOwnerForm();
+      } else {
+        adminSection.classList.add('hidden');
+      }
+
+      switchMainTab(currentMainTab);
+      renderAiMessages();
+    }
+
+    function switchMainTab(tab) {
+      currentMainTab = tab;
+      const builderSec = document.getElementById('builderSection');
+      const marketSec = document.getElementById('marketplaceSection');
+
+      const btnBuilder = document.getElementById('navTabBuilder');
+      const btnFree = document.getElementById('navTabFree');
+      const btnPaid = document.getElementById('navTabPaid');
+
+      btnBuilder.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition ' + (tab === 'builder' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/25' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800');
+      btnFree.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition ' + (tab === 'free-apps' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/25' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800');
+      btnPaid.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition ' + (tab === 'paid-apps' ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/25' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800');
+
+      if (tab === 'builder') {
+        builderSec.classList.remove('hidden');
+        builderSec.classList.add('grid');
+        marketSec.classList.add('hidden');
+      } else {
+        builderSec.classList.add('hidden');
+        builderSec.classList.remove('grid');
+        marketSec.classList.remove('hidden');
+        renderMarketplaceStore(tab);
+      }
+    }
+
+    // =========================================================
+    // WEB-TO-APP BUILDER
+    // =========================================================
+    function handleGenerateWebApp(e) {
+      e.preventDefault();
+      let rawUrl = document.getElementById('builderUrlInput').value.trim();
+      if (!rawUrl) {
+        showToast('দয়া করে একটি ওয়েবসাইটের লিংক দিন!', 'error');
+        return;
+      }
+      if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
+        rawUrl = 'https://' + rawUrl;
+      }
+
+      const name = document.getElementById('builderAppNameInput').value.trim() || 'আমার ওয়েব অ্যাপ';
+      const icon = document.getElementById('builderIconSelect').value;
+      const color = document.getElementById('builderColorInput').value;
+
+      generatedWebAppData = { name, url: rawUrl, icon, color };
+      iframeFallbackActive = false;
+
+      document.getElementById('phoneEmptyState').classList.add('hidden');
+      const activeBox = document.getElementById('phoneActiveState');
+      activeBox.classList.remove('hidden');
+      activeBox.classList.add('flex');
+
+      document.getElementById('phoneAppHeader').style.backgroundColor = color;
+      document.getElementById('phoneAppTitleText').textContent = `${icon} ${name}`;
+      document.getElementById('phoneExternalLink').href = rawUrl;
+      document.getElementById('phoneFallbackUrl').textContent = rawUrl;
+      document.getElementById('phoneFallbackBtn').href = rawUrl;
+
+      document.getElementById('phoneAppIframe').classList.remove('hidden');
+      document.getElementById('phoneFallbackBox').classList.add('hidden');
+      document.getElementById('phoneFallbackBox').classList.remove('flex');
+      document.getElementById('phoneAppIframe').src = rawUrl;
+
+      document.getElementById('generatedAppDownloadBox').classList.remove('hidden');
+      document.getElementById('generatedAppReadyTitle').textContent = `${icon} ${name} — অ্যাপ প্রস্তুত!`;
+      showToast(`"${name}" অ্যাপ তৈরি হয়ে গেছে!`, 'success');
+    }
+
+    function toggleIframeFallback() {
+      iframeFallbackActive = !iframeFallbackActive;
+      const iframe = document.getElementById('phoneAppIframe');
+      const fallback = document.getElementById('phoneFallbackBox');
+      if (iframeFallbackActive) {
+        iframe.classList.add('hidden');
+        fallback.classList.remove('hidden');
+        fallback.classList.add('flex');
+      } else {
+        iframe.classList.remove('hidden');
+        fallback.classList.add('hidden');
+        fallback.classList.remove('flex');
+      }
+    }
+
+    function downloadGeneratedWebApp() {
+      if (!generatedWebAppData) return;
+      const htmlContent = `<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${generatedWebAppData.name}</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+    body, html { width: 100%; height: 100%; overflow: hidden; background: #0B0F19; }
+    header { height: 50px; background: ${generatedWebAppData.color}; color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; font-weight: bold; }
+    iframe { width: 100%; height: calc(100% - 50px); border: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <span>${generatedWebAppData.icon} ${generatedWebAppData.name}</span>
+    <a href="${generatedWebAppData.url}" target="_blank" style="color:#fff;font-size:12px;text-decoration:none;">ব্রাউজারে খুলুন ↗</a>
+  </header>
+  <iframe src="${generatedWebAppData.url}" allow="geolocation; microphone; camera; fullscreen"></iframe>
+</body>
+</html>`;
+
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${generatedWebAppData.name.replace(/\s+/g, '_')}_App.html`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('অ্যাপ প্যাকেজ ডাউনলোড শুরু হয়েছে!', 'success');
+    }
+
+    // =========================================================
+    // APP UPLOAD (.APK / .APP ONLY) & MARKETPLACE STORE
+    // =========================================================
+    function openUploadModal(adminMode = false) {
+      isAdminUploadMode = adminMode;
+      selectedUploadFile = null;
+      selectedUploadPricing = 'free';
+      document.getElementById('uploadFileInput').value = '';
+      document.getElementById('uploadFileLabelText').textContent = 'Choose File (.apk / .app)';
+      document.getElementById('uploadAppNameInput').value = '';
+      document.getElementById('uploadVideoLinkInput').value = '';
+      document.getElementById('uploadDescInput').value = '';
+      document.getElementById('uploadBkashInput').value = '';
+      document.getElementById('uploadNagadInput').value = '';
+      document.getElementById('uploadPriceInput').value = '';
+      setUploadPricingType('free');
+
+      document.getElementById('uploadModalTitle').textContent = adminMode
+        ? 'অ্যাডমিন অ্যাপ আপলোড (০ টাকা ফ্রি)'
+        : 'আপনার অ্যাপ আপলোড করুন';
+      document.getElementById('uploadModalFeeSubtitle').textContent = adminMode
+        ? 'অ্যাডমিন প্যানেল থেকে কোনো চার্জ ছাড়াই অ্যাপ পাবলিশ হবে'
+        : `আপলোড চার্জ: ${appState.siteConfig.uploadFee} টাকা (ওয়ালেট থেকে কাটা হবে)`;
+
+      const modal = document.getElementById('uploadAppModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeUploadModal() {
+      const modal = document.getElementById('uploadAppModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function handleUploadFileSelection(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      const lower = file.name.toLowerCase();
+      if (!lower.endsWith('.apk') && !lower.endsWith('.app')) {
+        e.target.value = '';
+        selectedUploadFile = null;
+        document.getElementById('uploadFileLabelText').textContent = 'Choose File (.apk / .app)';
+        showToast(
+          'ভুল ফাইল! এখানে কোনো ZIP, RAR, 7z বা ZArchiver ফাইল আপলোড করা যাবে না। শুধুমাত্র .apk অথবা .app ফাইল দিন।',
+          'error'
+        );
+        return;
+      }
+
+      selectedUploadFile = file;
+      document.getElementById('uploadFileLabelText').textContent = file.name;
+      showToast(`ফাইল সিলেক্ট হয়েছে: ${file.name}`, 'success');
+    }
+
+    function setUploadPricingType(type) {
+      selectedUploadPricing = type;
+      const btnFree = document.getElementById('pricingBtnFree');
+      const btnPaid = document.getElementById('pricingBtnPaid');
+      const priceBox = document.getElementById('uploadPriceFieldBox');
+
+      btnFree.className = 'py-2.5 rounded-xl text-xs font-bold border transition ' + (type === 'free' ? 'bg-emerald-600 border-emerald-400 text-white' : 'bg-slate-950 border-slate-700 text-slate-400');
+      btnPaid.className = 'py-2.5 rounded-xl text-xs font-bold border transition ' + (type === 'paid' ? 'bg-amber-500 border-amber-300 text-slate-950' : 'bg-slate-950 border-slate-700 text-slate-400');
+      priceBox.classList.toggle('hidden', type !== 'paid');
+    }
+
+    function handlePublishStoreApp(e) {
+      e.preventDefault();
+      const user = getCurrentUser();
+      if (!user) return;
+
+      if (!selectedUploadFile) {
+        showToast('দয়া করে প্রথমে একটি .apk বা .app ফাইল সিলেক্ট করুন!', 'error');
+        return;
+      }
+
+      const appName = document.getElementById('uploadAppNameInput').value.trim();
+      const videoLink = document.getElementById('uploadVideoLinkInput').value.trim();
+      const description = document.getElementById('uploadDescInput').value.trim();
+      const bkash = document.getElementById('uploadBkashInput').value.trim() || appState.siteConfig.bkashNumber;
+      const nagad = document.getElementById('uploadNagadInput').value.trim() || appState.siteConfig.nagadNumber;
+      const priceVal = Number(document.getElementById('uploadPriceInput').value || 0);
+
+      if (!appName) {
+        showToast('অ্যাপের নাম দেওয়া বাধ্যতামূলক!', 'error');
+        return;
+      }
+      if (!videoLink) {
+        showToast('প্রমাণ হিসেবে ভিডিও লিংক দেওয়া বাধ্যতামূলক!', 'error');
+        return;
+      }
+      if (!description) {
+        showToast('ডেসক্রিপশন দেওয়া বাধ্যতামূলক (পাসওয়ার্ড থাকলে এখানে লিখুন)!', 'error');
+        return;
+      }
+      if (selectedUploadPricing === 'paid' && priceVal <= 0) {
+        showToast('পেইড অ্যাপের জন্য সঠিক টাকার পরিমাণ লিখুন!', 'error');
+        return;
+      }
+
+      const uploadFee = isAdminUploadMode ? 0 : Number(appState.siteConfig.uploadFee || 50);
+      if (!isAdminUploadMode && Number(user.walletBalance || 0) < uploadFee) {
+        showToast(`অ্যাপ আপলোড করতে ওয়ালেটে কমপক্ষে ${uploadFee} টাকা থাকতে হবে!`, 'error');
+        return;
+      }
+
+      if (!isAdminUploadMode && uploadFee > 0) {
+        user.walletBalance = Number(user.walletBalance || 0) - uploadFee;
+      }
+
+      const newApp = {
+        id: 'app_' + Date.now(),
+        appName,
+        fileName: selectedUploadFile.name,
+        videoLink,
+        description,
+        bkash,
+        nagad,
+        pricingType: selectedUploadPricing,
+        price: selectedUploadPricing === 'paid' ? priceVal : 0,
+        uploaderId: isAdminUploadMode ? 'admin' : user.id,
+        uploaderName: isAdminUploadMode ? 'অ্যাডমিন (Official)' : user.name,
+        createdAt: Date.now()
+      };
+
+      appState.apps.unshift(newApp);
+      saveState();
+      closeUploadModal();
+      isAdminUploadMode = false;
+      renderAppView();
+      switchMainTab(selectedUploadPricing === 'paid' ? 'paid-apps' : 'free-apps');
+      showToast('অ্যাপটি মার্কেটপ্লেসে সফলভাবে পাবলিশ হয়েছে!', 'success');
+    }
+
+    function renderMarketplaceStore(tab) {
+      const user = getCurrentUser();
+      const isFreeTab = tab === 'free-apps';
+      const titleEl = document.getElementById('marketplaceTitle');
+      const subEl = document.getElementById('marketplaceSubtitle');
+      const gridEl = document.getElementById('marketplaceAppsGrid');
+
+      titleEl.textContent = isFreeTab ? 'ফ্রি অ্যাপ মার্কেটপ্লেস' : 'পেইড প্রিমিয়াম অ্যাপ স্টোর';
+      subEl.textContent = isFreeTab
+        ? 'ইউজার ও অ্যাডমিনদের আপলোড করা ফ্রি অ্যাপগুলো সরাসরি ডাউনলোড করুন।'
+        : 'পেইড অ্যাপগুলো আনলক করে ডাউনলোড করুন।';
+
+      const filtered = appState.apps.filter((a) => a.pricingType === (isFreeTab ? 'free' : 'paid'));
+
+      if (filtered.length === 0) {
+        gridEl.innerHTML = `
+          <div class="sm:col-span-2 lg:col-span-3 bg-slate-900/60 border border-slate-800 rounded-3xl p-12 text-center">
+            <div class="w-16 h-16 rounded-2xl bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-4 text-2xl">📱</div>
+            <h3 class="text-lg font-bold text-white mb-1">এখনো কোনো অ্যাপ আপলোড করা হয়নি (০টি অ্যাপ)</h3>
+            <p class="text-xs sm:text-sm text-slate-400 max-w-md mx-auto mb-5">
+              নিচের কর্নারে থাকা <span class="text-indigo-400 font-bold">+ (প্লাস)</span> বাটনে ক্লিক করে আপনিই প্রথম অ্যাপ পাবলিশ করতে পারেন!
+            </p>
+            <button onclick="openUploadModal(false)" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold">
+              + এখনই অ্যাপ আপলোড করুন
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      gridEl.innerHTML = filtered
+        .map((item) => {
+          const unlockedList = (user && user.unlockedApps) || [];
+          const isUnlocked =
+            item.pricingType === 'free' ||
+            unlockedList.includes(item.id) ||
+            (user && item.uploaderId === user.id);
+
+          const actionButtonHtml = isUnlocked
+            ? `<button onclick="downloadStoreAppById('${item.id}')" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition">
+                ⬇ ${item.pricingType === 'free' ? 'ফ্রি ডাউনলোড' : 'ডাউনলোড করুন (আনলকড)'}
+              </button>`
+            : `<button onclick="openUnlockAppModal('${item.id}')" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-extrabold text-xs shadow-lg transition">
+                🔓 আনলক করুন (৳ ${item.price})
+              </button>`;
+
+          return `
+            <div class="bg-slate-900/90 border border-slate-800 hover:border-indigo-500/40 rounded-3xl p-5 flex flex-col justify-between shadow-xl transition">
+              <div>
+                <div class="flex items-start justify-between gap-3 mb-3">
+                  <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-300 font-extrabold text-sm">
+                      APP
+                    </div>
+                    <div>
+                      <h3 class="font-bold text-white text-base leading-snug">${escapeHtml(item.appName)}</h3>
+                      <p class="text-xs text-slate-400">আপলোডার: ${escapeHtml(item.uploaderName)}</p>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-lg text-xs font-extrabold ${item.pricingType === 'free' ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'}">
+                    ${item.pricingType === 'free' ? 'ফ্রি' : '৳ ' + item.price}
+                  </span>
+                </div>
+
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3.5 mb-4">
+                  <p class="text-[11px] font-semibold text-slate-400 mb-1">ডেসক্রিপশন ও পাসওয়ার্ড তথ্য:</p>
+                  <p class="text-xs text-slate-200 whitespace-pre-line leading-relaxed">${escapeHtml(item.description)}</p>
+                </div>
+              </div>
+
+              <div class="space-y-2.5 pt-2 border-t border-slate-800">
+                <a href="${escapeAttr(item.videoLink)}" target="_blank" rel="noreferrer" class="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-red-600/20 transition">
+                  ▶ ভিডিও দেখুন (প্রমাণ)
+                </a>
+                ${actionButtonHtml}
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+    }
+
+    function downloadStoreAppById(appId) {
+      const item = appState.apps.find((a) => a.id === appId);
+      if (!item) return;
+      const content = `App Name: ${item.appName}\nFile: ${item.fileName}\nUploader: ${item.uploaderName}\nDescription & Password:\n${item.description}\nProof Video: ${item.videoLink}`;
+      const blob = new Blob([content], { type: 'application/octet-stream' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = item.fileName || `${item.appName.replace(/\s+/g, '_')}.apk`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast(`"${item.appName}" ডাউনলোড হচ্ছে!`, 'success');
+    }
+
+    // =========================================================
+    // PAID APP UNLOCK (WALLET PAY & DIRECT SEND MONEY)
+    // =========================================================
+    function openUnlockAppModal(appId) {
+      const item = appState.apps.find((a) => a.id === appId);
+      const user = getCurrentUser();
+      if (!item || !user) return;
+
+      activeUnlockAppId = appId;
+      document.getElementById('unlockMoreMenu').classList.add('hidden');
+      document.getElementById('unlockModalAppTitle').textContent = item.appName + ' আনলক করুন';
+      document.getElementById('unlockModalPriceText').textContent = 'মূল্য: ৳ ' + item.price;
+      document.getElementById('unlockModalWalletBal').textContent = '৳ ' + Number(user.walletBalance || 0);
+      document.getElementById('unlockSellerNumbersText').textContent =
+        `বিকাশ: ${item.bkash || appState.siteConfig.bkashNumber} | নগদ: ${item.nagad || appState.siteConfig.nagadNumber}`;
+      document.getElementById('unlockSenderInput').value = '';
+      document.getElementById('unlockTrxInput').value = '';
+
+      const modal = document.getElementById('unlockAppModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeUnlockModal() {
+      activeUnlockAppId = null;
+      const modal = document.getElementById('unlockAppModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function toggleUnlockMoreMenu() {
+      document.getElementById('unlockMoreMenu').classList.toggle('hidden');
+    }
+
+    function unlockSelectedAppWithWallet() {
+      const item = appState.apps.find((a) => a.id === activeUnlockAppId);
+      const user = getCurrentUser();
+      if (!item || !user) return;
+
+      const price = Number(item.price || 0);
+      if (Number(user.walletBalance || 0) < price) {
+        showToast(`আপনার ওয়ালেটে পর্যাপ্ত টাকা নেই (${price} টাকা প্রয়োজন)।`, 'error');
+        return;
+      }
+
+      user.walletBalance = Number(user.walletBalance || 0) - price;
+      user.unlockedApps = Array.from(new Set([...(user.unlockedApps || []), item.id]));
+      saveState();
+      closeUnlockModal();
+      renderAppView();
+      showToast(`"${item.appName}" আনলক হয়েছে! ওয়ালেট থেকে ${price} টাকা কাটা হয়েছে।`, 'success');
+    }
+
+    function unlockSelectedAppWithDirectPay(e) {
+      e.preventDefault();
+      const item = appState.apps.find((a) => a.id === activeUnlockAppId);
+      const user = getCurrentUser();
+      if (!item || !user) return;
+
+      const sender = document.getElementById('unlockSenderInput').value.trim();
+      const trxId = document.getElementById('unlockTrxInput').value.trim();
+      if (!sender || !trxId) {
+        showToast('নাম্বার এবং ট্রানজেকশন আইডি (TrxID) লিখুন!', 'error');
+        return;
+      }
+
+      user.unlockedApps = Array.from(new Set([...(user.unlockedApps || []), item.id]));
+      appState.requests.unshift({
+        id: 'req_' + Date.now(),
+        userId: user.id,
+        userName: user.name,
+        method: 'Direct Pay',
+        senderNumber: sender,
+        amount: item.price,
+        trxId,
+        status: 'approved_unlock',
+        reason: `Paid App Unlock (${item.appName})`,
+        createdAt: Date.now()
+      });
+
+      saveState();
+      closeUnlockModal();
+      renderAppView();
+      showToast(`"${item.appName}" আনলক হয়েছে!`, 'success');
+    }
+
+    // =========================================================
+    // WALLET & ADD MONEY MODAL
+    // =========================================================
+    function openWalletModal() {
+      const user = getCurrentUser();
+      if (!user) return;
+      selectedScreenshotName = '';
+      document.getElementById('addMoneyScreenshotLabel').textContent = 'পেমেন্ট স্ক্রিনশট আপলোড করুন';
+      document.getElementById('addMoneySenderInput').value = '';
+      document.getElementById('addMoneyAmountInput').value = '';
+      document.getElementById('addMoneyTrxInput').value = '';
+      document.getElementById('modalWalletBalance').textContent = '৳ ' + Number(user.walletBalance || 0);
+      document.getElementById('walletBkashDisplay').textContent = appState.siteConfig.bkashNumber;
+      document.getElementById('walletNagadDisplay').textContent = appState.siteConfig.nagadNumber;
+      selectPayMethod('bKash');
+
+      const modal = document.getElementById('walletModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeWalletModal() {
+      const modal = document.getElementById('walletModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function copyCurrentNumber(type) {
+      const num = type === 'bkash' ? appState.siteConfig.bkashNumber : appState.siteConfig.nagadNumber;
+      copyValue(num, `${type === 'bkash' ? 'বিকাশ' : 'নগদ'} নাম্বার কপি হয়েছে: ${num}`);
+    }
+
+    function selectPayMethod(method) {
+      selectedAddMoneyMethod = method;
+      const bBtn = document.getElementById('payMethodBkash');
+      const nBtn = document.getElementById('payMethodNagad');
+      bBtn.className = 'py-2 rounded-xl text-xs font-bold border ' + (method === 'bKash' ? 'bg-pink-600 border-pink-400 text-white' : 'bg-slate-950 border-slate-800 text-slate-400');
+      nBtn.className = 'py-2 rounded-xl text-xs font-bold border ' + (method === 'Nagad' ? 'bg-orange-600 border-orange-400 text-white' : 'bg-slate-950 border-slate-800 text-slate-400');
+    }
+
+    function handleScreenshotFile(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      selectedScreenshotName = file.name;
+      document.getElementById('addMoneyScreenshotLabel').textContent = `${file.name} ✓`;
+    }
+
+    function handleAddMoneySubmit(e) {
+      e.preventDefault();
+      const user = getCurrentUser();
+      if (!user) return;
+
+      const sender = document.getElementById('addMoneySenderInput').value.trim();
+      const amount = Number(document.getElementById('addMoneyAmountInput').value || 0);
+      const trxId = document.getElementById('addMoneyTrxInput').value.trim();
+
+      if (!sender || amount <= 0 || !trxId || !selectedScreenshotName) {
+        showToast('সেন্ডার নাম্বার, টাকার পরিমাণ, ট্রানজেকশন আইডি এবং স্ক্রিনশট সব দিন!', 'error');
+        return;
+      }
+
+      user.walletBalance = Number(user.walletBalance || 0) + amount;
+      appState.requests.unshift({
+        id: 'req_' + Date.now(),
+        userId: user.id,
+        userName: user.name,
+        method: selectedAddMoneyMethod,
+        senderNumber: sender,
+        amount,
+        trxId,
+        status: 'approved',
+        reason: `Verified (${selectedScreenshotName})`,
+        createdAt: Date.now()
+      });
+
+      saveState();
+      closeWalletModal();
+      renderAppView();
+      showToast(`আপনার ওয়ালেটে ${amount} টাকা যোগ হয়েছে!`, 'success');
+    }
+
+    // =========================================================
+    // BACKGROUND MUSIC PLAYER (SONG FEE)
+    // =========================================================
+    function openMusicModal() {
+      document.getElementById('musicModalFeeDesc').textContent =
+        `পছন্দের অডিও গান সিলেক্ট করলে ব্যাকগ্রাউন্ডে বাজবে। চার্জ: ${appState.siteConfig.songFee} টাকা (ওয়ালেট থেকে কাটা হবে)।`;
+      const modal = document.getElementById('musicModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeMusicModal() {
+      const modal = document.getElementById('musicModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function handleBgSongSelection(e) {
+      const file = e.target.files && e.target.files[0];
+      const user = getCurrentUser();
+      if (!file || !user) return;
+
+      const fee = Number(appState.siteConfig.songFee || 2);
+      if (Number(user.walletBalance || 0) < fee) {
+        showToast(`ব্যাকগ্রাউন্ড গান অ্যাড করতে ওয়ালেটে কমপক্ষে ${fee} টাকা থাকতে হবে!`, 'error');
+        e.target.value = '';
+        return;
+      }
+
+      user.walletBalance = Number(user.walletBalance || 0) - fee;
+      saveState();
+
+      const audio = document.getElementById('bgAudioPlayer');
+      audio.src = URL.createObjectURL(file);
+      audio.play().catch(() => {});
+
+      document.getElementById('musicLabelText').textContent = file.name.slice(0, 10) + '...';
+      const playBtn = document.getElementById('musicPlayPauseBtn');
+      const muteBtn = document.getElementById('musicMuteBtn');
+      playBtn.classList.remove('hidden');
+      muteBtn.classList.remove('hidden');
+      playBtn.textContent = '⏸';
+
+      closeMusicModal();
+      renderAppView();
+      showToast(`"${file.name}" চালু হয়েছে! ওয়ালেট থেকে ${fee} টাকা কাটা হয়েছে।`, 'success');
+    }
+
+    function toggleBgMusicPlay() {
+      const audio = document.getElementById('bgAudioPlayer');
+      const btn = document.getElementById('musicPlayPauseBtn');
+      if (!audio.src) return;
+      if (audio.paused) {
+        audio.play().catch(() => {});
+        btn.textContent = '⏸';
+      } else {
+        audio.pause();
+        btn.textContent = '▶';
+      }
+    }
+
+    function toggleBgMusicMute() {
+      const audio = document.getElementById('bgAudioPlayer');
+      const btn = document.getElementById('musicMuteBtn');
+      isBgMuted = !isBgMuted;
+      audio.muted = isBgMuted;
+      btn.textContent = isBgMuted ? '🔇' : '🔊';
+    }
+
+    // =========================================================
+    // VIP ULTRA PRO MAX AI SUPPORT & AUTO-MODERATION
+    // =========================================================
+    function toggleAiChatWidget() {
+      const widget = document.getElementById('aiChatWidget');
+      const willShow = widget.classList.contains('hidden');
+      widget.classList.toggle('hidden', !willShow);
+      widget.classList.toggle('flex', willShow);
+      if (willShow) renderAiMessages();
+    }
+
+    function renderAiMessages() {
+      const box = document.getElementById('aiMessagesContainer');
+      box.innerHTML = aiChatHistory
+        .map(
+          (m) => `
+          <div class="p-3 rounded-2xl text-xs leading-relaxed max-w-[85%] ${
+            m.role === 'user'
+              ? 'bg-indigo-600 text-white ml-auto rounded-br-none'
+              : 'bg-slate-800 text-slate-200 mr-auto rounded-bl-none'
+          }">
+            ${escapeHtml(m.text)}
+          </div>
+        `
+        )
+        .join('');
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function handleAiChatSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('aiChatInput');
+      const text = input.value.trim();
+      const user = getCurrentUser();
+      if (!text || !user) return;
+
+      aiChatHistory.push({ role: 'user', text });
+      input.value = '';
+
+      // Auto-moderation check for severe abuse / hacking attempts
+      const lower = text.toLowerCase();
+      const severeKeywords = ['hack', 'scam', 'abuse', 'গালি', 'হ্যাক', 'স্ক্যাম'];
+      const violated = severeKeywords.some((kw) => lower.includes(kw));
+
+      if (violated) {
+        user.banned = true;
+        user.banUntil = 'permanent';
+        user.banReason = 'AI Bot Auto-Ban: নীতিমালা ভঙ্গের চেষ্টা';
+        saveState();
+        toggleAiChatWidget();
+        renderAppView();
+        showToast('নীতিমালা ভঙ্গের কারণে এআই বট আপনাকে ব্যান করেছে!', 'error');
+        return;
+      }
+
+      let reply = 'ধন্যবাদ! আপনি ওয়েবসাইট লিংক থেকে অ্যাপ তৈরি করতে পারেন, "+ " বাটন থেকে .apk বা .app ফাইল আপলোড করতে পারেন অথবা ওয়ালেটে টাকা অ্যাড করতে পারেন।';
+      if (text.includes('আপলোড') || text.includes('upload') || text.includes('apk')) {
+        reply = `অ্যাপ আপলোড করতে নিচের "+" বাটনে ক্লিক করুন। শুধুমাত্র .apk বা .app ফাইল গ্রহণযোগ্য (ZIP/ZArchiver ব্লকড), প্রমাণ ভিডিও লিংক ও পাসওয়ার্ড/ডেসক্রিপশন দিতে হবে এবং ওয়ালেটে ${appState.siteConfig.uploadFee} টাকা থাকতে হবে।`;
+      } else if (text.includes('ওয়ালেট') || text.includes('টাকা') || text.includes('বিকাশ') || text.includes('নগদ')) {
+        reply = `উপরের ওয়ালেট বাটনে ক্লিক করে বিকাশ (${appState.siteConfig.bkashNumber}) অথবা নগদ (${appState.siteConfig.nagadNumber}) নাম্বারে পাঠিয়ে TrxID ও স্ক্রিনশট দিয়ে টাকা অ্যাড করতে পারেন।`;
+      } else if (text.includes('লিংক') || text.includes('অ্যাপ তৈরি')) {
+        reply = '"লিংক থেকে অ্যাপ তৈরি" ট্যাবে গিয়ে যেকোনো ওয়েবসাইটের URL দিলে সাথে সাথে মোবাইল প্রিভিউ ও ডাউনলোডযোগ্য অ্যাপ প্যাকেজ তৈরি হবে।';
+      }
+
+      aiChatHistory.push({ role: 'assistant', text: reply });
+      renderAiMessages();
+    }
+
+    // =========================================================
+    // SECRET ADMIN PANEL & OWNER PANEL
+    // =========================================================
+    function openAdminLockModal() {
+      document.getElementById('adminLockPassInput').value = '';
+      const modal = document.getElementById('adminLockModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeAdminLockModal() {
+      const modal = document.getElementById('adminLockModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function handleHeaderLockClick() {
+      if (appState.isAdminUnlocked) {
+        renderAppView();
+      } else {
+        openAdminLockModal();
+      }
+    }
+
+    function verifyAdminPassword(e) {
+      e.preventDefault();
+      const pass = document.getElementById('adminLockPassInput').value;
+      if (pass === 'RRR222') {
+        appState.isAdminUnlocked = true;
+        saveState();
+        closeAdminLockModal();
+        renderAppView();
+        showToast('অ্যাডমিন প্যানেল আনলক হয়েছে!', 'success');
+      } else {
+        showToast('ভুল পাসওয়ার্ড!', 'error');
+      }
+    }
+
+    function lockAdminPanel() {
+      appState.isAdminUnlocked = false;
+      saveState();
+      renderAppView();
+      showToast('অ্যাডমিন প্যানেল লক করা হয়েছে।', 'info');
+    }
+
+    function switchAdminTab(tab) {
+      document.getElementById('adminUsersContainer').classList.toggle('hidden', tab !== 'users');
+      document.getElementById('adminRequestsContainer').classList.toggle('hidden', tab !== 'requests');
+      document.getElementById('adminRequestsContainer').classList.toggle('grid', tab === 'requests');
+      document.getElementById('adminVipBotContainer').classList.toggle('hidden', tab !== 'vip-bot');
+      document.getElementById('adminOwnerForm').classList.toggle('hidden', tab !== 'owner');
+      document.getElementById('adminOwnerForm').classList.toggle('grid', tab === 'owner');
+
+      if (tab === 'users') renderAdminUsersList();
+      if (tab === 'requests') renderAdminRequestsAndBans();
+      if (tab === 'vip-bot') renderVipBotPanel();
+      if (tab === 'owner') populateOwnerForm();
+    }
+
+    function renderAdminUsersList() {
+      const container = document.getElementById('adminUsersContainer');
+      if (appState.users.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400">কোনো ইউজার পাওয়া যায়নি।</p>';
+        return;
+      }
+
+      container.innerHTML = appState.users
+        .map(
+          (u) => `
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-white text-sm">${escapeHtml(u.name)}</span>
+                ${u.banned ? '<span class="px-2 py-0.5 rounded bg-red-500/20 text-red-400 text-[10px] font-bold">BANNED</span>' : ''}
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">Gmail: ${escapeHtml(u.email)} | Phone: ${escapeHtml(u.phone)}</p>
+              <p class="text-xs text-emerald-400 font-bold mt-1">ওয়ালেট ব্যালেন্স: ৳ ${Number(u.walletBalance || 0)}</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <input id="walletAdjustInput_${u.id}" type="number" placeholder="টাকা" class="w-24 px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white" />
+              <button onclick="adminAdjustUserWallet('${u.id}', 'add')" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold">+ টাকা অ্যাড</button>
+              <button onclick="adminAdjustUserWallet('${u.id}', 'zero')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-semibold">শূন্য (0)</button>
+              ${
+                !u.banned
+                  ? `
+                    <select id="banSelect_${u.id}" class="px-2 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs text-slate-200">
+                      <option value="1d">১ দিন</option>
+                      <option value="7d">৭ দিন</option>
+                      <option value="30d">৩০ দিন</option>
+                      <option value="permanent">পার্মানেন্ট</option>
+                    </select>
+                    <button onclick="adminBanUser('${u.id}')" class="px-2.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-semibold">ব্যান করুন</button>
+                  `
+                  : `<button onclick="adminUnbanUser('${u.id}')" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold">আনব্যান করুন</button>`
+              }
+            </div>
+          </div>
+        `
+        )
+        .join('');
+    }
+
+    function adminAdjustUserWallet(userId, mode) {
+      const target = appState.users.find((u) => u.id === userId);
+      if (!target) return;
+      const val = Number(document.getElementById('walletAdjustInput_' + userId).value || 0);
+      if (mode === 'zero') {
+        target.walletBalance = 0;
+      } else if (mode === 'add') {
+        target.walletBalance = Math.max(0, Number(target.walletBalance || 0) + val);
+      }
+      saveState();
+      renderAppView();
+      showToast(`${target.name}-এর ওয়ালেট আপডেট হয়েছে: ৳${target.walletBalance}`, 'success');
+    }
+
+    function adminBanUser(userId) {
+      const target = appState.users.find((u) => u.id === userId);
+      if (!target) return;
+      const dur = document.getElementById('banSelect_' + userId).value;
+      target.banned = true;
+      target.banReason = `Admin Ban (${dur})`;
+      if (dur === 'permanent') target.banUntil = 'permanent';
+      else if (dur === '1d') target.banUntil = Date.now() + 86400000;
+      else if (dur === '7d') target.banUntil = Date.now() + 7 * 86400000;
+      else if (dur === '30d') target.banUntil = Date.now() + 30 * 86400000;
+      saveState();
+      renderAppView();
+      showToast(`${target.name}-কে ব্যান করা হয়েছে।`, 'info');
+    }
+
+    function adminUnbanUser(userId) {
+      const target = appState.users.find((u) => u.id === userId);
+      if (!target) return;
+      target.banned = false;
+      target.banUntil = null;
+      target.banReason = '';
+      saveState();
+      renderAppView();
+      showToast(`${target.name}-কে আনব্যান করা হয়েছে!`, 'success');
+    }
+
+    function renderAdminRequestsAndBans() {
+      const bannedBox = document.getElementById('adminBannedListBox');
+      const logsBox = document.getElementById('adminPaymentLogsBox');
+
+      const bannedUsers = appState.users.filter((u) => u.banned);
+      bannedBox.innerHTML =
+        '<h3 class="text-sm font-bold text-red-400 mb-3">ব্যান হওয়া ইউজার তালিকা</h3>' +
+        (bannedUsers.length === 0
+          ? '<p class="text-xs text-slate-500">কোনো ব্যান হওয়া ইউজার নেই।</p>'
+          : bannedUsers
+              .map(
+                (bu) => `
+              <div class="p-3 rounded-xl bg-slate-900 border border-red-500/30 flex items-center justify-between gap-2 mb-2">
+                <div>
+                  <p class="text-xs font-bold text-white">${escapeHtml(bu.name)}</p>
+                  <p class="text-[11px] text-red-300">${escapeHtml(bu.banReason)}</p>
+                </div>
+                <button onclick="adminUnbanUser('${bu.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold">আনব্যান</button>
+              </div>
+            `
+              )
+              .join(''));
+
+      logsBox.innerHTML =
+        '<h3 class="text-sm font-bold text-indigo-300 mb-3">পেমেন্ট ও রিকোয়েস্ট লগ</h3>' +
+        (appState.requests.length === 0
+          ? '<p class="text-xs text-slate-500">এখনো কোনো রিকোয়েস্ট আসেনি।</p>'
+          : appState.requests
+              .map(
+                (req) => `
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs mb-2">
+                <div class="flex justify-between font-bold">
+                  <span>${escapeHtml(req.userName)} (${escapeHtml(req.method)})</span>
+                  <span class="text-emerald-400">৳${req.amount}</span>
+                </div>
+                <p class="text-slate-400 mt-0.5">From: ${escapeHtml(req.senderNumber)} | TrxID: ${escapeHtml(req.trxId)}</p>
+              </div>
+            `
+              )
+              .join(''));
+    }
+
+    function renderVipBotPanel() {
+      document.getElementById('vipBotLockBox').classList.toggle('hidden', appState.isVipBotUnlocked);
+      document.getElementById('vipBotActiveBox').classList.toggle('hidden', !appState.isVipBotUnlocked);
+      if (appState.isVipBotUnlocked && appState.vipBotLogs.length > 0) {
+        document.getElementById('vipBotLogs').innerHTML = appState.vipBotLogs
+          .map((line) => `<div>${escapeHtml(line)}</div>`)
+          .join('');
+      }
+    }
+
+    function unlockVipBotPanel() {
+      const code = document.getElementById('vipBotCodeInput').value;
+      if (code === 'RRR') {
+        appState.isVipBotUnlocked = true;
+        saveState();
+        renderVipBotPanel();
+        showToast('VIP Ultra Pro Max Abba Max আনলক হয়েছে!', 'success');
+      } else {
+        showToast('ভুল সিক্রেট কোড!', 'error');
+      }
+    }
+
+    function startVipBotEngine() {
+      appState.isVipBotRunning = true;
+      const now = new Date().toLocaleTimeString('bn-BD');
+      appState.vipBotLogs.unshift(
+        `[${now}] ✅ সিস্টেম ও সিকিউরিটি বট ১০০% সক্রিয় — ৯৯% অটোমেশন চালু রয়েছে।`,
+        `[${now}] ⚡ VIP Ultra Pro Max Abba Max ইঞ্জিন স্টার্ট হয়েছে!`
+      );
+      saveState();
+      renderVipBotPanel();
+      showToast('VIP অটোনোমাস ইঞ্জিন স্টার্ট হয়েছে!', 'success');
+    }
+
+    function populateOwnerForm() {
+      const c = appState.siteConfig;
+      document.getElementById('ownerSiteNameInput').value = c.siteName;
+      document.getElementById('ownerTaglineInput').value = c.tagline;
+      document.getElementById('ownerBkashInput').value = c.bkashNumber;
+      document.getElementById('ownerNagadInput').value = c.nagadNumber;
+      document.getElementById('ownerUploadFeeInput').value = c.uploadFee;
+      document.getElementById('ownerSongFeeInput').value = c.songFee;
+      document.getElementById('ownerAnnouncementInput').value = c.announcement;
+    }
+
+    function saveOwnerSettings(e) {
+      e.preventDefault();
+      appState.siteConfig = {
+        siteName: document.getElementById('ownerSiteNameInput').value.trim() || defaultState.siteConfig.siteName,
+        tagline: document.getElementById('ownerTaglineInput').value.trim() || defaultState.siteConfig.tagline,
+        bkashNumber: document.getElementById('ownerBkashInput').value.trim() || defaultState.siteConfig.bkashNumber,
+        nagadNumber: document.getElementById('ownerNagadInput').value.trim() || defaultState.siteConfig.nagadNumber,
+        uploadFee: Math.max(0, Number(document.getElementById('ownerUploadFeeInput').value || 0)),
+        songFee: Math.max(0, Number(document.getElementById('ownerSongFeeInput').value || 0)),
+        announcement: document.getElementById('ownerAnnouncementInput').value.trim()
+      };
+      saveState();
+      renderAppView();
+      showToast('ওনার প্যানেলের সকল সেটিংস সেভ হয়েছে!', 'success');
+    }
+
+    // =========================================================
+    // HTML ESCAPE UTILITIES
+    // =========================================================
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function escapeAttr(str) {
+      const trimmed = String(str || '').trim();
+      if (trimmed.startsWith('https://') || trimmed.startsWith('http://')) {
+        return escapeHtml(trimmed);
+      }
+      return '#';
+    }
+
+    // Initial boot
+    renderAppView();
+  </script>
+</body>
+</html>
